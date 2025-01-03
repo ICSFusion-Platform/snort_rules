@@ -1,0 +1,16 @@
+# Copyright (c) 2025, ICSFusion Platform
+# You may not use this file except in compliance with the license. The license should have been received with this file. You may obtain a copy of the license at:
+# https://github.com/ICSFusion-Platform/snort_rules/blob/main/LICENSE
+alert http any any -> any any ( \
+    msg:"ICSF EXPLOIT Possible Four-Faith RCE CVE-2024-12856"; \
+    flow:to_server; \
+    http_method; content:"POST",nocase;\
+    http_uri; content:"apply.cgi",nocase;\
+    http_raw_header; content:"Authorization",nocase;\
+    http_raw_body; content:"change_action=",nocase;\
+    content:"adjust_sys_time"; \
+    pcre:"/adj_time_[a-zA-Z]+=[^&]*[^\d&][^&]*[&|\w]/"; \
+    classtype:web-application-attack; \
+    reference:cve,CVE-2024-12856; \
+    reference:url,https://vulncheck.com/blog/four-faith-cve-2024-12856; \
+    sid:15510102; rev:2; metadata:created_at 2024_12_30; )
